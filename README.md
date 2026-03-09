@@ -94,14 +94,13 @@ That's it! No build process, no dependencies, no setup needed.
 
 ## 🎨 Screenshots
 
-### Hero Section
+
 ![Hero Section](screenshots/hero.png)
 
-### Interactive Demos
-![Interactive Demo](screenshots/demo.png)
 
-### Visual Flowcharts
-![Flowcharts](screenshots/flowchart.png)
+![Interactive Demo](screenshots/screenshot2.png)
+
+
 
 *Note: Add screenshots by taking them and uploading to a `screenshots/` folder*
 
