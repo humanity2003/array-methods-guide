@@ -95,14 +95,11 @@ That's it! No build process, no dependencies, no setup needed.
 ## 🎨 Screenshots
 
 
-![Hero Section](screenshots/hero.png)
+![Hero Section](hero.png)
 
 
-![Interactive Demo](screenshots/screenshot2.png)
+![Interactive Demo](screenshot2.png)
 
-
-
-*Note: Add screenshots by taking them and uploading to a `screenshots/` folder*
 
 ## 📚 Who Is This For?
 
