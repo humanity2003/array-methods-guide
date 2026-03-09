@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Array Methods You Must Know - Interactive Guide</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Space+Mono:wght@400;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #ec4899;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --bg: #0f172a;
+            --bg-light: #1e293b;
+            --bg-lighter: #334155;
+            --text: #f1f5f9;
+            --text-dim: #94a3b8;
+            --accent: #22d3ee;
+            --code-bg: #1e1e1e;
+        }
+        
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            width: 150%;
+            height: 150%;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(236, 72, 153, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(99, 102, 241, 0.3) 0%, transparent 50%);
+            animation: heroGlow 8s ease-in-out infinite;
+        }
+        
+        @keyframes heroGlow {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-20px, 20px) scale(1.1); }
+        }
+        
+        .hero-content {
+            text-align: center;
+            position: relative;
+            z-index: 1;
+            padding: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: clamp(2.5rem, 8vw, 5rem);
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, #fff, #e0e7ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        .hero p {
+            font-size: clamp(1.1rem, 2vw, 1.5rem);
+            color: rgba(255,255,255,0.9);
+            max-width: 600px;
+            margin: 0 auto 2rem;
+            animation: fadeInUp 1s ease-out 0.2s backwards;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .scroll-indicator {
+            position: absolute;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+        
+        .section {
+            margin-bottom: 6rem;
+            opacity: 0;
+            transform: translateY(40px);
+            animation: fadeInUp 0.8s ease-out forwards;
+        }
+        
+        .section-title {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 700;
+            margin-bottom: 2rem;
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .method-card {
+            background: var(--bg-light);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--bg-lighter);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .method-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            transition: width 0.3s ease;
+        }
+        
+        .method-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.2);
+        }
+        
+        .method-card:hover::before {
+            width: 100%;
+            opacity: 0.05;
+        }
+        
+        .method-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .method-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Fira Code', monospace;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: white;
+        }
+        
+        .method-name {
+            font-size: 1.8rem;
+            font-weight: 700;
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+        }
+        
+        .visual-demo {
+            background: var(--code-bg);
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-lighter);
+        }
+        
+        .array-visual {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1.5rem 0;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .array-item {
+            min-width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+            animation: itemPop 0.5s ease-out backwards;
+        }
+        
+        @keyframes itemPop {
+            from {
+                transform: scale(0);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+        
+        .array-item.removed {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            animation: itemRemove 0.5s ease-out forwards;
+        }
+        
+        @keyframes itemRemove {
+            to {
+                transform: scale(0) rotate(180deg);
+                opacity: 0;
+            }
+        }
+        
+        .array-item.added {
+            background: linear-gradient(135deg, var(--success), #059669);
+            animation: itemAdd 0.5s ease-out backwards;
+        }
+        
+        @keyframes itemAdd {
+            from {
+                transform: scale(0) translateY(-30px);
+                opacity: 0;
+            }
+        }
+        
+        .arrow {
+            text-align: center;
+            color: var(--accent);
+            font-size: 2rem;
+            margin: 1rem 0;
+            animation: arrowPulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes arrowPulse {
+            0%, 100% { transform: translateY(0); opacity: 1; }
+            50% { transform: translateY(5px); opacity: 0.6; }
+        }
+        
+        code {
+            font-family: 'Fira Code', monospace;
+            background: var(--code-bg);
+            padding: 0.2rem 0.5rem;
+            border-radius: 0.3rem;
+            color: var(--accent);
+            font-size: 0.9em;
+        }
+        
+        pre {
+            background: var(--code-bg);
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            border: 1px solid var(--bg-lighter);
+        }
+        
+        pre code {
+            background: none;
+            padding: 0;
+            color: #e2e8f0;
+        }
+        
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .comparison-card {
+            background: var(--bg-light);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            border: 2px solid var(--bg-lighter);
+        }
+        
+        .comparison-card.old {
+            border-color: var(--warning);
+        }
+        
+        .comparison-card.new {
+            border-color: var(--success);
+        }
+        
+        .comparison-label {
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+        
+        .comparison-card.old .comparison-label {
+            color: var(--warning);
+        }
+        
+        .comparison-card.new .comparison-label {
+            color: var(--success);
+        }
+        
+        .flowchart {
+            background: var(--bg-light);
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .flow-step {
+            background: var(--code-bg);
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            margin: 1rem 0;
+            border-left: 4px solid var(--primary);
+            transition: all 0.3s ease;
+        }
+        
+        .flow-step:hover {
+            transform: translateX(10px);
+            border-left-color: var(--accent);
+        }
+        
+        .flow-arrow {
+            text-align: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
+        }
+        
+        .interactive-demo {
+            background: linear-gradient(135deg, var(--bg-light), var(--bg-lighter));
+            padding: 2rem;
+            border-radius: 1rem;
+            margin: 2rem 0;
+            border: 2px solid var(--primary);
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .table-container {
+            overflow-x: auto;
+            margin: 2rem 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--bg-light);
+            border-radius: 0.75rem;
+            overflow: hidden;
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--bg-lighter);
+        }
+        
+        tr:hover {
+            background: var(--bg-lighter);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        
+        .badge.yes {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+        
+        .badge.no {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+        
+        .tip {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(99, 102, 241, 0.1));
+            border-left: 4px solid var(--accent);
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            margin: 2rem 0;
+        }
+        
+        .tip-title {
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .demo-controls {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="hero">
+        <div class="hero-content">
+            <h1>Array Methods You Must Know</h1>
+            <p>Master JavaScript's most powerful array tools with interactive examples and beautiful visualizations</p>
+        </div>
+        <div class="scroll-indicator">
+            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- Why Array Methods Matter -->
+        <section class="section">
+            <h2 class="section-title">Why Array Methods Matter</h2>
+            
+            <div class="comparison">
+                <div class="comparison-card old">
+                    <div class="comparison-label">❌ The Old Way (For Loop)</div>
+                    <pre><code>let numbers = [1, 2, 3, 4, 5];
+let doubled = [];
+
+for (let i = 0; i < numbers.length; i++) {
+  doubled.push(numbers[i] * 2);
+}
+// [2, 4, 6, 8, 10]</code></pre>
+                </div>
+                
+                <div class="comparison-card new">
+                    <div class="comparison-label">✅ The Modern Way (Array Method)</div>
+                    <pre><code>let numbers = [1, 2, 3, 4, 5];
+let doubled = numbers.map(num => num * 2);
+
+// [2, 4, 6, 8, 10]</code></pre>
+                </div>
+            </div>
+            
+            <div class="tip">
+                <div class="tip-title">💡 Why Array Methods Win</div>
+                <p>More readable • Less code • Fewer bugs • Functional style • No manual indexing</p>
+            </div>
+        </section>
+
+        <!-- Push & Pop -->
+        <section class="section">
+            <h2 class="section-title">Adding & Removing: push() & pop()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">+</div>
+                    <div class="method-name">push()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Adds elements to the END of an array</p>
+                
+                <div class="interactive-demo">
+                    <h4 style="margin-bottom: 1rem;">Try it yourself!</h4>
+                    <div class="demo-controls">
+                        <button onclick="doPush()">Push 'Orange'</button>
+                        <button onclick="resetPush()">Reset</button>
+                    </div>
+                    <div id="pushArray" class="array-visual"></div>
+                </div>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">How it works:</h4>
+                    <div class="array-visual">
+                        <div class="array-item" style="animation-delay: 0s;">🍎</div>
+                        <div class="array-item" style="animation-delay: 0.1s;">🍌</div>
+                    </div>
+                    <div class="arrow">↓ push('🍊')</div>
+                    <div class="array-visual">
+                        <div class="array-item" style="animation-delay: 0s;">🍎</div>
+                        <div class="array-item" style="animation-delay: 0.1s;">🍌</div>
+                        <div class="array-item added" style="animation-delay: 0.2s;">🍊</div>
+                    </div>
+                </div>
+                
+                <pre><code>let fruits = ['apple', 'banana'];
+fruits.push('orange');
+console.log(fruits); // ['apple', 'banana', 'orange']</code></pre>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">-</div>
+                    <div class="method-name">pop()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Removes the LAST element from an array</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">How it works:</h4>
+                    <div class="array-visual">
+                        <div class="array-item" style="animation-delay: 0s;">🍎</div>
+                        <div class="array-item" style="animation-delay: 0.1s;">🍌</div>
+                        <div class="array-item" style="animation-delay: 0.2s;">🍊</div>
+                    </div>
+                    <div class="arrow">↓ pop()</div>
+                    <div class="array-visual">
+                        <div class="array-item" style="animation-delay: 0s;">🍎</div>
+                        <div class="array-item" style="animation-delay: 0.1s;">🍌</div>
+                        <div class="array-item removed" style="animation-delay: 0.2s;">🍊</div>
+                    </div>
+                </div>
+                
+                <pre><code>let fruits = ['apple', 'banana', 'orange'];
+let removed = fruits.pop();
+console.log(removed); // 'orange'
+console.log(fruits);  // ['apple', 'banana']</code></pre>
+            </div>
+        </section>
+
+        <!-- Shift & Unshift -->
+        <section class="section">
+            <h2 class="section-title">Working with the Start: shift() & unshift()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">←</div>
+                    <div class="method-name">shift()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Removes the FIRST element from an array</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">How it works:</h4>
+                    <div class="array-visual">
+                        <div class="array-item" style="animation-delay: 0s;">🍎</div>
+                        <div class="array-item" style="animation-delay: 0.1s;">🍌</div>
+                        <div class="array-item" style="animation-delay: 0.2s;">🍊</div>
+                    </div>
+                    <div class="arrow">↓ shift()</div>
+                    <div class="array-visual">
+                        <div class="array-item removed" style="animation-delay: 0s;">🍎</div>
+                        <div class="array-item" style="animation-delay: 0.1s;">🍌</div>
+                        <div class="array-item" style="animation-delay: 0.2s;">🍊</div>
+                    </div>
+                </div>
+                
+                <pre><code>let fruits = ['apple', 'banana', 'orange'];
+let removed = fruits.shift();
+console.log(removed); // 'apple'
+console.log(fruits);  // ['banana', 'orange']</code></pre>
+                
+                <div class="tip">
+                    <div class="tip-title">⚡ Use Case</div>
+                    <p>Perfect for implementing queues (First In, First Out). Like a line at a store - first person in line gets served first!</p>
+                </div>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">→</div>
+                    <div class="method-name">unshift()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Adds elements to the BEGINNING of an array</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">How it works:</h4>
+                    <div class="array-visual">
+                        <div class="array-item" style="animation-delay: 0s;">🍌</div>
+                        <div class="array-item" style="animation-delay: 0.1s;">🍊</div>
+                    </div>
+                    <div class="arrow">↓ unshift('🍎')</div>
+                    <div class="array-visual">
+                        <div class="array-item added" style="animation-delay: 0s;">🍎</div>
+                        <div class="array-item" style="animation-delay: 0.1s;">🍌</div>
+                        <div class="array-item" style="animation-delay: 0.2s;">🍊</div>
+                    </div>
+                </div>
+                
+                <pre><code>let fruits = ['banana', 'orange'];
+fruits.unshift('apple');
+console.log(fruits); // ['apple', 'banana', 'orange']</code></pre>
+            </div>
+            
+            <div class="visual-demo" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1)); padding: 2rem; border-radius: 1rem;">
+                <h4 style="color: var(--accent); margin-bottom: 1rem; text-align: center;">Quick Visual Guide:</h4>
+                <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 2rem; margin-top: 2rem;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⬅️</div>
+                        <div style="font-weight: 600;">unshift()</div>
+                        <div style="color: var(--text-dim); font-size: 0.9rem;">Add to START</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">[ array ]</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">➡️</div>
+                        <div style="font-weight: 600;">push()</div>
+                        <div style="color: var(--text-dim); font-size: 0.9rem;">Add to END</div>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 2rem; margin-top: 3rem;">
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⬅️</div>
+                        <div style="font-weight: 600;">shift()</div>
+                        <div style="color: var(--text-dim); font-size: 0.9rem;">Remove from START</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 1.5rem; margin-bottom: 0.5rem;">[ array ]</div>
+                    </div>
+                    <div style="text-align: center;">
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">➡️</div>
+                        <div style="font-weight: 600;">pop()</div>
+                        <div style="color: var(--text-dim); font-size: 0.9rem;">Remove from END</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Map -->
+        <section class="section">
+            <h2 class="section-title">Transforming: map()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">→</div>
+                    <div class="method-name">map()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Creates a NEW array by transforming each element</p>
+                
+                <div class="flowchart">
+                    <h4 style="color: var(--accent); margin-bottom: 1.5rem;">Transformation Flow:</h4>
+                    
+                    <div class="flow-step">
+                        <strong>Original Array:</strong>
+                        <div class="array-visual">
+                            <div class="array-item">1</div>
+                            <div class="array-item">2</div>
+                            <div class="array-item">3</div>
+                            <div class="array-item">4</div>
+                            <div class="array-item">5</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">↓ Apply function: num => num * 2</div>
+                    
+                    <div class="flow-step">
+                        <strong>Transformed Array:</strong>
+                        <div class="array-visual">
+                            <div class="array-item added">2</div>
+                            <div class="array-item added">4</div>
+                            <div class="array-item added">6</div>
+                            <div class="array-item added">8</div>
+                            <div class="array-item added">10</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <pre><code>let numbers = [1, 2, 3, 4, 5];
+let doubled = numbers.map(num => num * 2);
+
+console.log(doubled); // [2, 4, 6, 8, 10]
+console.log(numbers); // [1, 2, 3, 4, 5] (original unchanged!)</code></pre>
+                
+                <div class="tip">
+                    <div class="tip-title">🔑 Key Point</div>
+                    <p>map() always returns a NEW array with the SAME length. Original array stays unchanged!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Filter -->
+        <section class="section">
+            <h2 class="section-title">Selecting: filter()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">✓</div>
+                    <div class="method-name">filter()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Creates a NEW array with elements that pass a test</p>
+                
+                <div class="flowchart">
+                    <h4 style="color: var(--accent); margin-bottom: 1.5rem;">Selection Flow:</h4>
+                    
+                    <div class="flow-step">
+                        <strong>Original Array:</strong>
+                        <div class="array-visual">
+                            <div class="array-item">1</div>
+                            <div class="array-item">2</div>
+                            <div class="array-item">3</div>
+                            <div class="array-item">4</div>
+                            <div class="array-item">5</div>
+                            <div class="array-item">6</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">↓ Test: num % 2 === 0 (is even?)</div>
+                    
+                    <div class="flow-step">
+                        <div style="margin-bottom: 1rem;">
+                            <span style="color: #ef4444;">❌ 1 (odd)</span> • 
+                            <span style="color: var(--success);">✓ 2 (even)</span> • 
+                            <span style="color: #ef4444;">❌ 3 (odd)</span> • 
+                            <span style="color: var(--success);">✓ 4 (even)</span> • 
+                            <span style="color: #ef4444;">❌ 5 (odd)</span> • 
+                            <span style="color: var(--success);">✓ 6 (even)</span>
+                        </div>
+                        <strong>Filtered Array (only evens):</strong>
+                        <div class="array-visual">
+                            <div class="array-item added">2</div>
+                            <div class="array-item added">4</div>
+                            <div class="array-item added">6</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <pre><code>let numbers = [1, 2, 3, 4, 5, 6];
+let evens = numbers.filter(num => num % 2 === 0);
+
+console.log(evens); // [2, 4, 6]</code></pre>
+                
+                <div class="tip">
+                    <div class="tip-title">🔑 Key Point</div>
+                    <p>filter() returns a NEW array that's usually SHORTER (or same length). Elements that don't pass the test are excluded!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reduce -->
+        <section class="section">
+            <h2 class="section-title">Accumulating: reduce()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">Σ</div>
+                    <div class="method-name">reduce()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Reduces an array to a SINGLE value by accumulating</p>
+                
+                <div class="flowchart">
+                    <h4 style="color: var(--accent); margin-bottom: 1.5rem;">Accumulation Flow (Sum Example):</h4>
+                    
+                    <div class="flow-step" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));">
+                        <strong>Start:</strong> accumulator = 0
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step">
+                        <strong>Step 1:</strong> 0 + 1 = <span style="color: var(--accent);">1</span>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step">
+                        <strong>Step 2:</strong> 1 + 2 = <span style="color: var(--accent);">3</span>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step">
+                        <strong>Step 3:</strong> 3 + 3 = <span style="color: var(--accent);">6</span>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step">
+                        <strong>Step 4:</strong> 6 + 4 = <span style="color: var(--accent);">10</span>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step">
+                        <strong>Step 5:</strong> 10 + 5 = <span style="color: var(--accent);">15</span>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(34, 211, 238, 0.1));">
+                        <strong>Final Result:</strong> <span style="color: var(--success); font-size: 1.5rem;">15</span>
+                    </div>
+                </div>
+                
+                <pre><code>let numbers = [1, 2, 3, 4, 5];
+let sum = numbers.reduce((total, num) => total + num, 0);
+
+console.log(sum); // 15</code></pre>
+                
+                <div class="tip">
+                    <div class="tip-title">🧊 Snowball Analogy</div>
+                    <p>Think of reduce() like a snowball rolling downhill. It starts small (initial value) and picks up more snow (each element) until you have one big snowball (final result)!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- forEach -->
+        <section class="section">
+            <h2 class="section-title">Iterating: forEach()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">⟳</div>
+                    <div class="method-name">forEach()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Executes a function for each element (NO return value)</p>
+                
+                <div class="flowchart">
+                    <h4 style="color: var(--accent); margin-bottom: 1.5rem;">Loop Through Each Item:</h4>
+                    
+                    <div class="flow-step">
+                        <strong>Array:</strong> ['🍎', '🍌', '🍊']
+                    </div>
+                    
+                    <div class="flow-arrow">↓ forEach(item => console.log(item))</div>
+                    
+                    <div class="flow-step">
+                        <div style="font-family: 'Fira Code', monospace; color: var(--accent);">
+                            → 🍎<br>
+                            → 🍌<br>
+                            → 🍊
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step" style="background: rgba(239, 68, 68, 0.1);">
+                        <strong>Returns:</strong> <span style="color: #ef4444;">undefined</span> (no new array created!)
+                    </div>
+                </div>
+                
+                <pre><code>let fruits = ['apple', 'banana', 'orange'];
+
+fruits.forEach(fruit => {
+  console.log(fruit);
+});
+// Output:
+// apple
+// banana  
+// orange</code></pre>
+                
+                <div class="comparison">
+                    <div class="comparison-card old">
+                        <div class="comparison-label">❌ forEach() - No return</div>
+                        <pre><code>let result = numbers.forEach(n => n * 2);
+console.log(result); // undefined</code></pre>
+                    </div>
+                    
+                    <div class="comparison-card new">
+                        <div class="comparison-label">✅ map() - Returns array</div>
+                        <pre><code>let result = numbers.map(n => n * 2);
+console.log(result); // [2, 4, 6]</code></pre>
+                    </div>
+                </div>
+                
+                <div class="tip">
+                    <div class="tip-title">🎯 When to Use forEach()</div>
+                    <p>Use forEach() for side effects (logging, updating DOM, API calls). Use map() when you need a new array!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Find Methods -->
+        <section class="section">
+            <h2 class="section-title">Finding Elements: find() & findIndex()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">🔍</div>
+                    <div class="method-name">find()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Returns the FIRST element that passes a test</p>
+                
+                <div class="flowchart">
+                    <h4 style="color: var(--accent); margin-bottom: 1.5rem;">Search Flow:</h4>
+                    
+                    <div class="flow-step">
+                        <strong>Array:</strong>
+                        <div class="array-visual">
+                            <div class="array-item">5</div>
+                            <div class="array-item">12</div>
+                            <div class="array-item">8</div>
+                            <div class="array-item">130</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">↓ find(num => num > 10)</div>
+                    
+                    <div class="flow-step">
+                        <div style="margin-bottom: 1rem;">
+                            <span style="color: #ef4444;">❌ 5 (too small)</span> → 
+                            <span style="color: var(--success);">✓ 12 (found!)</span> → 
+                            <span style="color: var(--text-dim);">⏹️ Stop searching</span>
+                        </div>
+                        <strong>Returns:</strong> <span style="color: var(--success); font-size: 1.3rem;">12</span>
+                    </div>
+                </div>
+                
+                <pre><code>let numbers = [5, 12, 8, 130, 44];
+let firstLarge = numbers.find(num => num > 10);
+
+console.log(firstLarge); // 12 (stops at first match!)</code></pre>
+                
+                <pre><code>// Real-world example: Find user by ID
+let users = [
+  { id: 1, name: 'Alice' },
+  { id: 2, name: 'Bob' },
+  { id: 3, name: 'Charlie' }
+];
+
+let user = users.find(u => u.id === 2);
+console.log(user); // { id: 2, name: 'Bob' }</code></pre>
+                
+                <div class="tip">
+                    <div class="tip-title">💡 find() vs filter()</div>
+                    <p><strong>find():</strong> Returns FIRST matching element (or undefined)<br>
+                    <strong>filter():</strong> Returns ALL matching elements in a new array</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Boolean Methods -->
+        <section class="section">
+            <h2 class="section-title">Testing: some() & every()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">?</div>
+                    <div class="method-name">some()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Returns TRUE if AT LEAST ONE element passes the test</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">Testing: Are any numbers > 100?</h4>
+                    <div class="array-visual">
+                        <div class="array-item">5</div>
+                        <div class="array-item">12</div>
+                        <div class="array-item">130</div>
+                        <div class="array-item">8</div>
+                    </div>
+                    <div style="margin: 1rem 0; text-align: center;">
+                        <div><span style="color: #ef4444;">❌ 5</span> • <span style="color: #ef4444;">❌ 12</span> • <span style="color: var(--success);">✓ 130</span> • <span style="color: var(--text-dim);">⏹️ Stop</span></div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div style="text-align: center; font-size: 1.5rem; color: var(--success); font-weight: 700;">TRUE</div>
+                </div>
+                
+                <pre><code>let numbers = [5, 12, 130, 8];
+let hasLarge = numbers.some(num => num > 100);
+
+console.log(hasLarge); // true (130 > 100)</code></pre>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">✓</div>
+                    <div class="method-name">every()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Returns TRUE if ALL elements pass the test</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">Testing: Are all numbers positive?</h4>
+                    <div class="array-visual">
+                        <div class="array-item">5</div>
+                        <div class="array-item">12</div>
+                        <div class="array-item">8</div>
+                        <div class="array-item">3</div>
+                    </div>
+                    <div style="margin: 1rem 0; text-align: center;">
+                        <div><span style="color: var(--success);">✓ 5</span> • <span style="color: var(--success);">✓ 12</span> • <span style="color: var(--success);">✓ 8</span> • <span style="color: var(--success);">✓ 3</span></div>
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div style="text-align: center; font-size: 1.5rem; color: var(--success); font-weight: 700;">TRUE</div>
+                </div>
+                
+                <pre><code>let numbers = [5, 12, 8, 3];
+let allPositive = numbers.every(num => num > 0);
+
+console.log(allPositive); // true</code></pre>
+                
+                <div class="comparison">
+                    <div class="comparison-card" style="border-color: var(--primary);">
+                        <div class="comparison-label" style="color: var(--primary);">some() - At Least One</div>
+                        <pre><code>// "Is anyone over 18?"
+let ages = [15, 16, 21, 14];
+ages.some(age => age >= 18); 
+// true (21 is >= 18)</code></pre>
+                    </div>
+                    
+                    <div class="comparison-card" style="border-color: var(--accent);">
+                        <div class="comparison-label" style="color: var(--accent);">every() - All Must Pass</div>
+                        <pre><code>// "Is everyone over 18?"
+let ages = [15, 16, 21, 14];
+ages.every(age => age >= 18);
+// false (15, 16, 14 < 18)</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Slice & Splice -->
+        <section class="section">
+            <h2 class="section-title">Extracting & Modifying: slice() & splice()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">✂️</div>
+                    <div class="method-name">slice()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Returns a COPY of a portion of the array (doesn't modify original)</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">Extract middle section: slice(1, 4)</h4>
+                    <div style="margin-bottom: 1rem; color: var(--text-dim);">Indices: 0, 1, 2, 3, 4</div>
+                    <div class="array-visual">
+                        <div class="array-item" style="opacity: 0.4;">🍎</div>
+                        <div class="array-item added">🍌</div>
+                        <div class="array-item added">🍊</div>
+                        <div class="array-item added">🍇</div>
+                        <div class="array-item" style="opacity: 0.4;">🍓</div>
+                    </div>
+                    <div style="margin: 1rem 0; text-align: center; font-family: 'Fira Code', monospace;">
+                        slice(1, 4) → starts at index 1, stops BEFORE index 4
+                    </div>
+                    <div class="arrow">↓</div>
+                    <div class="array-visual">
+                        <div class="array-item added">🍌</div>
+                        <div class="array-item added">🍊</div>
+                        <div class="array-item added">🍇</div>
+                    </div>
+                </div>
+                
+                <pre><code>let fruits = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+let some = fruits.slice(1, 4);
+
+console.log(some);   // ['banana', 'orange', 'grape']
+console.log(fruits); // Original unchanged!</code></pre>
+                
+                <div class="tip">
+                    <div class="tip-title">📌 Remember</div>
+                    <p>slice(start, end) - includes start, excludes end. Negative indices count from the end!</p>
+                </div>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">🔧</div>
+                    <div class="method-name">splice()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">MODIFIES array: removes, replaces, or inserts elements</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">Remove 2 items starting at index 1:</h4>
+                    <div class="array-visual">
+                        <div class="array-item">🍎</div>
+                        <div class="array-item">🍌</div>
+                        <div class="array-item">🍊</div>
+                        <div class="array-item">🍇</div>
+                        <div class="array-item">🍓</div>
+                    </div>
+                    <div class="arrow">↓ splice(1, 2)</div>
+                    <div class="array-visual">
+                        <div class="array-item">🍎</div>
+                        <div class="array-item removed">🍌</div>
+                        <div class="array-item removed">🍊</div>
+                        <div class="array-item">🍇</div>
+                        <div class="array-item">🍓</div>
+                    </div>
+                </div>
+                
+                <pre><code>let fruits = ['apple', 'banana', 'orange', 'grape', 'strawberry'];
+let removed = fruits.splice(1, 2);
+
+console.log(removed); // ['banana', 'orange']
+console.log(fruits);  // ['apple', 'grape', 'strawberry']</code></pre>
+                
+                <pre><code>// Insert elements (deleteCount = 0)
+let arr = ['a', 'b', 'd'];
+arr.splice(2, 0, 'c'); // Insert 'c' at index 2
+console.log(arr); // ['a', 'b', 'c', 'd']</code></pre>
+                
+                <div class="comparison">
+                    <div class="comparison-card" style="border-color: var(--success);">
+                        <div class="comparison-label" style="color: var(--success);">slice() - Safe Copy</div>
+                        <ul style="margin-left: 1.5rem; color: var(--text-dim);">
+                            <li>Returns new array</li>
+                            <li>Original unchanged</li>
+                            <li>Read-only operation</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="comparison-card" style="border-color: var(--warning);">
+                        <div class="comparison-label" style="color: var(--warning);">splice() - Modifies</div>
+                        <ul style="margin-left: 1.5rem; color: var(--text-dim);">
+                            <li>Modifies original array</li>
+                            <li>Returns removed items</li>
+                            <li>Write operation</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sort & Reverse -->
+        <section class="section">
+            <h2 class="section-title">Reordering: sort() & reverse()</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">⬆️</div>
+                    <div class="method-name">sort()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Sorts array elements (MUTATES original array)</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">Sorting numbers:</h4>
+                    <div class="array-visual">
+                        <div class="array-item">40</div>
+                        <div class="array-item">100</div>
+                        <div class="array-item">1</div>
+                        <div class="array-item">5</div>
+                        <div class="array-item">25</div>
+                    </div>
+                    <div class="arrow">↓ sort((a, b) => a - b)</div>
+                    <div class="array-visual">
+                        <div class="array-item added">1</div>
+                        <div class="array-item added">5</div>
+                        <div class="array-item added">25</div>
+                        <div class="array-item added">40</div>
+                        <div class="array-item added">100</div>
+                    </div>
+                </div>
+                
+                <pre><code>// ⚠️ Default sort treats numbers as strings!
+let nums = [40, 100, 1, 5, 25];
+nums.sort();
+console.log(nums); // [1, 100, 25, 40, 5] - WRONG!
+
+// ✅ Correct way: use compare function
+nums.sort((a, b) => a - b);
+console.log(nums); // [1, 5, 25, 40, 100] - CORRECT!</code></pre>
+                
+                <pre><code>// Sort strings (works by default)
+let fruits = ['banana', 'apple', 'orange'];
+fruits.sort();
+console.log(fruits); // ['apple', 'banana', 'orange']</code></pre>
+                
+                <div class="tip">
+                    <div class="tip-title">⚠️ Important!</div>
+                    <p>sort() MUTATES the original array. Always use a compare function for numbers: <code>(a, b) => a - b</code> for ascending, <code>(a, b) => b - a</code> for descending!</p>
+                </div>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">🔄</div>
+                    <div class="method-name">reverse()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Reverses array order (MUTATES original)</p>
+                
+                <div class="visual-demo">
+                    <h4 style="color: var(--accent); margin-bottom: 1rem;">Flip the array:</h4>
+                    <div class="array-visual">
+                        <div class="array-item">1</div>
+                        <div class="array-item">2</div>
+                        <div class="array-item">3</div>
+                        <div class="array-item">4</div>
+                        <div class="array-item">5</div>
+                    </div>
+                    <div class="arrow">↓ reverse()</div>
+                    <div class="array-visual">
+                        <div class="array-item added">5</div>
+                        <div class="array-item added">4</div>
+                        <div class="array-item added">3</div>
+                        <div class="array-item added">2</div>
+                        <div class="array-item added">1</div>
+                    </div>
+                </div>
+                
+                <pre><code>let numbers = [1, 2, 3, 4, 5];
+numbers.reverse();
+console.log(numbers); // [5, 4, 3, 2, 1]</code></pre>
+            </div>
+        </section>
+
+        <!-- Bonus Utility Methods -->
+        <section class="section">
+            <h2 class="section-title">Bonus: Utility Methods</h2>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">📍</div>
+                    <div class="method-name">includes()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Check if array contains a value (returns true/false)</p>
+                
+                <pre><code>let fruits = ['apple', 'banana', 'orange'];
+
+console.log(fruits.includes('banana')); // true
+console.log(fruits.includes('grape'));  // false</code></pre>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">🔗</div>
+                    <div class="method-name">join()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Join all elements into a string</p>
+                
+                <div class="visual-demo">
+                    <div class="array-visual">
+                        <div class="array-item">🍎</div>
+                        <div class="array-item">🍌</div>
+                        <div class="array-item">🍊</div>
+                    </div>
+                    <div class="arrow">↓ join(' - ')</div>
+                    <div style="text-align: center; font-size: 1.3rem; color: var(--accent); font-weight: 600; margin-top: 1rem;">
+                        "🍎 - 🍌 - 🍊"
+                    </div>
+                </div>
+                
+                <pre><code>let fruits = ['apple', 'banana', 'orange'];
+
+console.log(fruits.join(', ')); // "apple, banana, orange"
+console.log(fruits.join(' - ')); // "apple - banana - orange"
+console.log(fruits.join(''));    // "applebananaorange"</code></pre>
+            </div>
+            
+            <div class="method-card">
+                <div class="method-header">
+                    <div class="method-icon">+</div>
+                    <div class="method-name">concat()</div>
+                </div>
+                
+                <p style="margin-bottom: 1.5rem; color: var(--text-dim);">Merge arrays (returns new array)</p>
+                
+                <div class="visual-demo">
+                    <div style="display: flex; gap: 2rem; justify-content: center; align-items: center; flex-wrap: wrap;">
+                        <div>
+                            <div style="text-align: center; margin-bottom: 0.5rem; color: var(--text-dim);">Array 1</div>
+                            <div class="array-visual">
+                                <div class="array-item">1</div>
+                                <div class="array-item">2</div>
+                            </div>
+                        </div>
+                        
+                        <div style="font-size: 2rem; color: var(--accent);">+</div>
+                        
+                        <div>
+                            <div style="text-align: center; margin-bottom: 0.5rem; color: var(--text-dim);">Array 2</div>
+                            <div class="array-visual">
+                                <div class="array-item">3</div>
+                                <div class="array-item">4</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="arrow">↓ concat()</div>
+                    
+                    <div>
+                        <div style="text-align: center; margin-bottom: 0.5rem; color: var(--success);">Merged Array</div>
+                        <div class="array-visual">
+                            <div class="array-item added">1</div>
+                            <div class="array-item added">2</div>
+                            <div class="array-item added">3</div>
+                            <div class="array-item added">4</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <pre><code>let arr1 = [1, 2];
+let arr2 = [3, 4];
+let merged = arr1.concat(arr2);
+
+console.log(merged); // [1, 2, 3, 4]
+console.log(arr1);   // [1, 2] (unchanged!)</code></pre>
+                
+                <pre><code>// Modern alternative: spread operator
+let merged = [...arr1, ...arr2];
+console.log(merged); // [1, 2, 3, 4]</code></pre>
+            </div>
+        </section>
+
+        <!-- Quick Reference Table -->
+        <section class="section">
+            <h2 class="section-title">Quick Reference</h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Method</th>
+                            <th>Purpose</th>
+                            <th>Returns</th>
+                            <th>Mutates?</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><code>push()</code></td>
+                            <td>Add to end</td>
+                            <td>New length</td>
+                            <td><span class="badge yes">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>pop()</code></td>
+                            <td>Remove from end</td>
+                            <td>Removed element</td>
+                            <td><span class="badge yes">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>shift()</code></td>
+                            <td>Remove from start</td>
+                            <td>Removed element</td>
+                            <td><span class="badge yes">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>unshift()</code></td>
+                            <td>Add to start</td>
+                            <td>New length</td>
+                            <td><span class="badge yes">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>map()</code></td>
+                            <td>Transform each element</td>
+                            <td>New array</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>filter()</code></td>
+                            <td>Keep matching elements</td>
+                            <td>New array</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>reduce()</code></td>
+                            <td>Accumulate to single value</td>
+                            <td>Single value</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>forEach()</code></td>
+                            <td>Execute function for each</td>
+                            <td>undefined</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>find()</code></td>
+                            <td>Find first matching element</td>
+                            <td>Element or undefined</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>findIndex()</code></td>
+                            <td>Find index of first match</td>
+                            <td>Index or -1</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>some()</code></td>
+                            <td>Test if any pass</td>
+                            <td>Boolean</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>every()</code></td>
+                            <td>Test if all pass</td>
+                            <td>Boolean</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>slice()</code></td>
+                            <td>Extract portion (copy)</td>
+                            <td>New array</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>splice()</code></td>
+                            <td>Remove/insert elements</td>
+                            <td>Removed elements</td>
+                            <td><span class="badge yes">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>sort()</code></td>
+                            <td>Sort elements</td>
+                            <td>Sorted array</td>
+                            <td><span class="badge yes">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>reverse()</code></td>
+                            <td>Reverse order</td>
+                            <td>Reversed array</td>
+                            <td><span class="badge yes">Yes</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>includes()</code></td>
+                            <td>Check if element exists</td>
+                            <td>Boolean</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>indexOf()</code></td>
+                            <td>Find index of element</td>
+                            <td>Index or -1</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>join()</code></td>
+                            <td>Join into string</td>
+                            <td>String</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                        <tr>
+                            <td><code>concat()</code></td>
+                            <td>Merge arrays</td>
+                            <td>New array</td>
+                            <td><span class="badge no">No</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Practice Section -->
+        <section class="section">
+            <h2 class="section-title">🎯 Practice Challenges</h2>
+            
+            <div class="method-card">
+                <h3 style="margin-bottom: 1.5rem;">Challenge 1: Basic Operations</h3>
+                
+                <div class="flowchart">
+                    <div class="flow-step">
+                        <strong>1. Create array:</strong>
+                        <pre><code>let numbers = [5, 12, 8, 130, 44, 3, 15, 7];</code></pre>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step">
+                        <strong>2. Use map() to double each number</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Expected: [10, 24, 16, 260, 88, 6, 30, 14]</div>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step">
+                        <strong>3. Use filter() to get numbers > 10</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Expected: [12, 130, 44, 15]</div>
+                    </div>
+                    
+                    <div class="flow-arrow">↓</div>
+                    
+                    <div class="flow-step">
+                        <strong>4. Use reduce() to calculate sum</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Expected: 201</div>
+                    </div>
+                </div>
+                
+                <div class="tip">
+                    <div class="tip-title">💻 Try It Yourself!</div>
+                    <p>Open your browser console (F12) and work through each step. Don't peek at the solution until you've tried!</p>
+                </div>
+            </div>
+            
+            <div class="method-card">
+                <h3 style="margin-bottom: 1.5rem;">Challenge 2: Finding & Testing</h3>
+                
+                <pre><code>let users = [
+  { name: 'Alice', age: 17, premium: false },
+  { name: 'Bob', age: 25, premium: true },
+  { name: 'Charlie', age: 16, premium: false },
+  { name: 'David', age: 30, premium: true }
+];</code></pre>
+                
+                <div class="flowchart">
+                    <div class="flow-step">
+                        <strong>Task 1:</strong> Find the first premium user
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Hint: Use find()</div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <strong>Task 2:</strong> Check if ANY user is under 18
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Hint: Use some()</div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <strong>Task 3:</strong> Check if ALL users are premium
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Hint: Use every()</div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <strong>Task 4:</strong> Get an array of just the names
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Hint: Use map()</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="method-card">
+                <h3 style="margin-bottom: 1.5rem;">Challenge 3: Data Manipulation</h3>
+                
+                <pre><code>let products = [
+  { name: 'Laptop', price: 1000 },
+  { name: 'Phone', price: 500 },
+  { name: 'Tablet', price: 300 },
+  { name: 'Monitor', price: 200 }
+];</code></pre>
+                
+                <div class="flowchart">
+                    <div class="flow-step">
+                        <strong>Task 1:</strong> Apply 10% discount to all prices
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Use map() to multiply prices by 0.9</div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <strong>Task 2:</strong> Filter products cheaper than $400
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Use filter()</div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <strong>Task 3:</strong> Calculate total value of all products
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Use reduce() to sum prices</div>
+                    </div>
+                    
+                    <div class="flow-step">
+                        <strong>Task 4:</strong> Sort products by price (low to high)
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">Use sort() with compare function</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="method-card">
+                <h3 style="margin-bottom: 1.5rem;">Challenge 4: Method Chaining</h3>
+                
+                <div class="tip" style="background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(99, 102, 241, 0.1));">
+                    <div class="tip-title">🔗 Advanced: Chain Multiple Methods</div>
+                    <p>You can chain methods together to solve complex problems in one line!</p>
+                </div>
+                
+                <pre><code>let numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+
+// Find sum of all even numbers
+let result = numbers
+  .filter(n => n % 2 === 0)  // [2, 4, 6, 8, 10]
+  .reduce((sum, n) => sum + n, 0);  // 30
+
+console.log(result); // 30</code></pre>
+                
+                <div class="flowchart">
+                    <div class="flow-step" style="background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(236, 72, 153, 0.1));">
+                        <strong>Your Challenge:</strong> 
+                        <div style="margin-top: 1rem;">
+                            Given: <code>let prices = [25, 50, 75, 100, 125, 150];</code>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            Find the average of prices over $50
+                        </div>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">
+                            Steps: filter > reduce > divide by length
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Decision Tree -->
+        <section class="section">
+            <h2 class="section-title">🌳 Which Method Should I Use?</h2>
+            
+            <div class="flowchart">
+                <div class="flow-step" style="background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white;">
+                    <strong style="font-size: 1.2rem;">What do you need to do?</strong>
+                </div>
+                
+                <div class="flow-arrow">↓</div>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+                    <div class="flow-step" style="border-left-color: var(--success);">
+                        <strong>Add/Remove Items?</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">
+                            • End: push() / pop()<br>
+                            • Start: unshift() / shift()<br>
+                            • Middle: splice()
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step" style="border-left-color: var(--primary);">
+                        <strong>Transform Data?</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">
+                            • Same length: map()<br>
+                            • Filter items: filter()<br>
+                            • Single value: reduce()
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step" style="border-left-color: var(--accent);">
+                        <strong>Find Something?</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">
+                            • First match: find()<br>
+                            • Check existence: includes()<br>
+                            • Get index: indexOf()
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step" style="border-left-color: var(--warning);">
+                        <strong>Test Conditions?</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">
+                            • Any pass: some()<br>
+                            • All pass: every()
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step" style="border-left-color: var(--secondary);">
+                        <strong>Reorder?</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">
+                            • Sort: sort()<br>
+                            • Reverse: reverse()
+                        </div>
+                    </div>
+                    
+                    <div class="flow-step" style="border-left-color: #10b981;">
+                        <strong>Extract/Combine?</strong>
+                        <div style="margin-top: 0.5rem; color: var(--text-dim);">
+                            • Extract: slice()<br>
+                            • Join: concat()<br>
+                            • String: join()
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        // Interactive push demo
+        let pushDemoArray = ['Apple', 'Banana'];
+        
+        function renderPushArray() {
+            const container = document.getElementById('pushArray');
+            container.innerHTML = '';
+            pushDemoArray.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'array-item';
+                div.style.animationDelay = `${index * 0.1}s`;
+                div.textContent = item;
+                container.appendChild(div);
+            });
+        }
+        
+        function doPush() {
+            pushDemoArray.push('Orange');
+            renderPushArray();
+        }
+        
+        function resetPush() {
+            pushDemoArray = ['Apple', 'Banana'];
+            renderPushArray();
+        }
+        
+        // Initialize
+        renderPushArray();
+        
+        // Scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -100px 0px'
+        };
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+        
+        document.querySelectorAll('.section').forEach(section => {
+            observer.observe(section);
+        });
+    </script>
+</body>
+</html>
